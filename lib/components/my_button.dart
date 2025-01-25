@@ -19,7 +19,7 @@ class MyButton extends StatelessWidget {
             color: Colors.black,
             borderRadius: BorderRadius.circular(12),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 143, vertical: 25),
+          padding: const EdgeInsets.symmetric(horizontal: 140, vertical: 25),
           child: Text(
             heading,
             style:const TextStyle(color: Colors.white, fontSize: 19),
