@@ -24,8 +24,10 @@ class DarlingPage extends StatelessWidget {
               child: MyContainer(heading:'Cheak Meachine Status'),
             ),
             // A conatiner for widget
-            const SizedBox(height: 20),
-            MyMeater()
+           SizedBox(height: 20),
+            MyMeater(
+              waterLevel:'99%',
+            )
           ],
         ),
       ),
