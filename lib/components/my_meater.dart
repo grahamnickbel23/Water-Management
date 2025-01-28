@@ -168,7 +168,10 @@ class _MyMeaterState extends State<MyMeater>
                   color: Colors.transparent,
                   width: 2,
                 ),
-                borderRadius: BorderRadius.circular(15),
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(15),
+                  topRight: Radius.circular(15)
+                ),
               ),
               //a row containing text and Outer circle
               child: Row(
@@ -178,7 +181,7 @@ class _MyMeaterState extends State<MyMeater>
                   container(),
                   // Outer circle
                   Padding(
-                    padding: const EdgeInsets.only(top: 8, right: 8, bottom: 8),
+                    padding: const EdgeInsets.only(top: 8, right: 8),
                     child: Container(
                       width: 175,
                       height: 175,

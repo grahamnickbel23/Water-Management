@@ -72,7 +72,9 @@ class _MyContainerState extends State<MyContainer> {
               height: 25,
               decoration: BoxDecoration(
                 color: secondContainerColor,
-                borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(15),bottomRight: Radius.circular(15)),
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(15),
+                  bottomRight: Radius.circular(15)),
               ),
               child: Padding(
                 padding: const EdgeInsets.only(left: 135),
