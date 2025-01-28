@@ -26,7 +26,7 @@ class DarlingPage extends StatelessWidget {
             // A conatiner for widget
            SizedBox(height: 20),
             MyMeater(
-              waterLevel:'99%',
+              waterLevel:'75%',
             )
           ],
         ),

@@ -6,7 +6,7 @@ class WaterPainter extends CustomPainter {
   final double waveHeight;
   final double waveSpeed;
   final Animation<double> animation;
-  
+
   WaterPainter({
     required this.waterLevel,
     this.waveHeight = 10.0,
@@ -33,8 +33,13 @@ class WaterPainter extends CustomPainter {
 
     // Create wave effect
     for (double i = 0; i <= size.width; i++) {
-      final wave1 = math.sin((i / size.width * 2 * math.pi) + (animation.value * waveSpeed)) * waveHeight;
-      final wave2 = math.sin((i / size.width * 4 * math.pi) + (animation.value * waveSpeed * 1.5)) * waveHeight * 0.5;
+      final wave1 = math.sin(
+              (i / size.width * 2 * math.pi) + (animation.value * waveSpeed)) *
+          waveHeight;
+      final wave2 = math.sin((i / size.width * 4 * math.pi) +
+              (animation.value * waveSpeed * 1.5)) *
+          waveHeight *
+          0.5;
       path.lineTo(i, centerY + wave1 + wave2);
     }
 
@@ -56,14 +61,15 @@ class MyMeater extends StatefulWidget {
   State<MyMeater> createState() => _MyMeaterState();
 }
 
-class _MyMeaterState extends State<MyMeater> with SingleTickerProviderStateMixin {
+class _MyMeaterState extends State<MyMeater>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _animationController;
   late final Animation<double> _animation;
 
   @override
   void initState() {
     super.initState();
-    
+
     // Initialize the animation controller
     _animationController = AnimationController(
       vsync: this,
@@ -89,6 +95,35 @@ class _MyMeaterState extends State<MyMeater> with SingleTickerProviderStateMixin
     super.dispose();
   }
 
+// we are definig container here
+//will be pulled latter in below portion
+  Widget container() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Water Level', // Updated to use the variable
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey[800],
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Current Status',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey[600],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   double _getWaterLevelValue() {
     String cleanValue = widget.waterLevel.replaceAll('%', '').trim();
     double level = double.tryParse(cleanValue) ?? 0.0;
@@ -101,7 +136,8 @@ class _MyMeaterState extends State<MyMeater> with SingleTickerProviderStateMixin
     level = level.clamp(0.0, 100.0);
 
     if (level <= 50) {
-      return Color.lerp(const Color.fromARGB(255, 2, 252, 11), Colors.orange, level / 50)!;
+      return Color.lerp(
+          const Color.fromARGB(255, 2, 252, 11), Colors.orange, level / 50)!;
     } else {
       return Color.lerp(Colors.orange, Colors.red, (level - 50) / 50)!;
     }
@@ -111,9 +147,9 @@ class _MyMeaterState extends State<MyMeater> with SingleTickerProviderStateMixin
     String cleanValue = waterLevel.replaceAll('%', '').trim();
     double level = double.tryParse(cleanValue) ?? 0.0;
     level = level.clamp(0.0, 100.0);
-    
+
     // Interpolate between grey and white based on water level
-    return Color.lerp(Colors.grey.shade600, Colors.white, level / 100)!;
+    return Color.lerp(Colors.grey.shade500, Colors.white, level / 100)!;
   }
 
   @override
@@ -121,80 +157,93 @@ class _MyMeaterState extends State<MyMeater> with SingleTickerProviderStateMixin
     return Center(
       child: Column(
         children: [
-          // main comtainer
+          // main container
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Container(
               width: double.infinity,
               decoration: BoxDecoration(
-                color: Colors.transparent,
+                color: Colors.white,
                 border: Border.all(
-                  color: Colors.black,
+                  color: Colors.transparent,
                   width: 2,
                 ),
                 borderRadius: BorderRadius.circular(15),
               ),
-              //Outer circle
-              child: Container(
-                width: 175,
-                height: 175,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: _getOuterCircleColor(widget.waterLevel),
-                  border: Border.all(
-                    color: Colors.transparent,
-                    width: 2,
-                  ),
-                ),
-                // Inner circle
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 150,
-                      height: 150,
+              //a row containing text and Outer circle
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // text
+                  container(),
+                  // Outer circle
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8, right: 8, bottom: 8),
+                    child: Container(
+                      width: 175,
+                      height: 175,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: _getInnerCircleColor(widget.waterLevel),
+                        color: _getOuterCircleColor(widget.waterLevel),
+                        border: Border.all(
+                          color: Colors.transparent,
+                          width: 2,
+                        ),
                       ),
-                      // code for water
-                      child: Stack(
+                      // Inner circle
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          CustomPaint(
-                            size: const Size(150, 150),
-                            painter: WaterPainter(
-                              waterLevel: _getWaterLevelValue(),
-                              animation: _animation,
+                          Container(
+                            width: 150,
+                            height: 150,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: _getInnerCircleColor(widget.waterLevel),
                             ),
-                          ),
-                          // code for text
-                          Center(
-                            child: AnimatedSwitcher(
-                              duration: const Duration(microseconds: 1200),
-                              transitionBuilder: (child, animation) {
-                                return ScaleTransition(
-                                  scale: animation,
-                                  child: child,
-                                );
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 10, left: 10),
-                                child: Text(
-                                  widget.waterLevel,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 65,
-                                    fontWeight: FontWeight.bold,
+                            // code for water
+                            child: Stack(
+                              children: [
+                                CustomPaint(
+                                  size: const Size(150, 150),
+                                  painter: WaterPainter(
+                                    waterLevel: _getWaterLevelValue(),
+                                    animation: _animation,
                                   ),
                                 ),
-                              ),
+                                // code for text
+                                Center(
+                                  child: AnimatedSwitcher(
+                                    duration:
+                                        const Duration(microseconds: 1200),
+                                    transitionBuilder: (child, animation) {
+                                      return ScaleTransition(
+                                        scale: animation,
+                                        child: child,
+                                      );
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 10, left: 10),
+                                      child: Text(
+                                        widget.waterLevel,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 65,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
