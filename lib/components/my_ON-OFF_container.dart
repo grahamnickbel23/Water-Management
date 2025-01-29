@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class MyContainer extends StatefulWidget {
@@ -15,6 +16,17 @@ class _MyContainerState extends State<MyContainer> {
   // Initial Color
   Color secondContainerColor = Colors.orange;
   bool value = false; // Initially turned off
+
+  void updateLEDStatus(bool newValue) async {
+  DatabaseReference ref = FirebaseDatabase.instance.ref();
+  
+  try {
+    await ref.update({"LED_STATUS": newValue ? 1 : 0});
+    print("LED_STATUS updated to ${newValue ? 1 : 0}");
+  } catch (e) {
+    print("Error updating LED_STATUS: $e");
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +66,9 @@ class _MyContainerState extends State<MyContainer> {
                         secondContainerColor =
                             newValue ? Colors.green : Colors.orange;
                       });
+
+                      updateLEDStatus(newValue); // Update Firebase
+                      
                     },
                     title: const Text(
                       'Press to turn ON',

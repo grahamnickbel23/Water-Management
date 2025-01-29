@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/components/my_ON-OFF_container.dart';
 import 'package:myapp/components/my_drawer.dart';
@@ -26,11 +27,13 @@ class DarlingPage extends StatelessWidget {
               child: MyContainer(heading: 'Check Machine Status'),
             ),
             const SizedBox(height: 20),
+
             // function fot water Level
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 3),
-              child: MyMeater(waterLevel: '55%'),
+              child: MyMeater(waterLevel: '69%'),
             ),
+
             // function for AI prediction is here
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 13),
@@ -86,7 +89,9 @@ class DarlingPage extends StatelessWidget {
                 ),
               ),
             ),
+
             const SizedBox(height: 20),
+
             // for two another container
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),

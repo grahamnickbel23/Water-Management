@@ -1,6 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:myapp/pages/Introdunction/landing_page.dart';
-import 'package:myapp/pages/darling_page.dart';
 import 'firebase_options.dart';
 
 import 'package:flutter/material.dart';
@@ -22,7 +21,7 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        body: DarlingPage(),
+        body: LandingPage(),
       )
     );
   }
