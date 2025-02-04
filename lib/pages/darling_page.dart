@@ -3,9 +3,77 @@ import 'package:flutter/material.dart';
 import 'package:myapp/components/my_ON-OFF_container.dart';
 import 'package:myapp/components/my_drawer.dart';
 import 'package:myapp/components/my_meater.dart';
+import 'package:myapp/components/my_notification.dart';
 
-class DarlingPage extends StatelessWidget {
-  const DarlingPage({super.key});
+// Add the StatefulWidget class definition
+class DarlingPage extends StatefulWidget {
+  const DarlingPage({Key? key}) : super(key: key);
+
+  @override
+  _DarlingPageState createState() => _DarlingPageState();
+}
+
+class _DarlingPageState extends State<DarlingPage> {
+  final database = FirebaseDatabase.instance.ref();
+  String waterLevel = "0%";
+  String humidity = "0%";
+  String temperature = "0";
+  int lastNotifiedLevel = 0; // Added this as a class-level variable
+
+  @override
+  void initState() {
+    super.initState();
+    _activateListeners();
+  }
+
+  void _activateListeners() {
+    // Water Level Listener
+    database.child('WATER_LEVEL').onValue.listen((event) {
+      final dynamic description = event.snapshot.value;
+      debugPrint("New water level received: $description");
+      setState(() {
+        waterLevel = description.toString();
+      });
+      
+      // code for notification upon increasing water level
+      int currentLevel =
+          int.tryParse(description.toString().replaceAll('%', '')) ??
+              0; // Remove the '%' sign and convert to integer
+
+      // Check if water level is above 50% and has increased by at least 1%
+      if (currentLevel > 50 && currentLevel > lastNotifiedLevel) {
+        // Only notify for each 1% increase
+        if (currentLevel - lastNotifiedLevel >= 1) {
+          MyNotification notification = MyNotification();
+          notification.showNotification(
+            title: 'Water Level Alert',
+            body: 'Water level has increased to $currentLevel%',
+          );
+
+          // Update the last notified level
+          lastNotifiedLevel = currentLevel;
+        }
+      }
+    });
+
+    // Humidity Listener
+    database.child('HUMIDITY').onValue.listen((event) {
+      final dynamic humidityValue = event.snapshot.value;
+      debugPrint("New humidity received: $humidityValue");
+      setState(() {
+        humidity = humidityValue.toString();
+      });
+    });
+
+    // Temperature Listener
+    database.child('TEMPERATURE').onValue.listen((event) {
+      final dynamic tempValue = event.snapshot.value;
+      debugPrint("New temperature received: $tempValue");
+      setState(() {
+        temperature = tempValue.toString();
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,14 +92,14 @@ class DarlingPage extends StatelessWidget {
           children: [
             const Padding(
               padding: EdgeInsets.only(top: 15),
-              child: MyContainer(heading: 'Check Machine Status'),
+              child: MyContainer(heading: 'See Mrachine Status'),
             ),
             const SizedBox(height: 20),
 
             // function fot water Level
-            const Padding(
+            Padding(
               padding: EdgeInsets.symmetric(horizontal: 3),
-              child: MyMeater(waterLevel: '69%'),
+              child: MyMeater(waterLevel: waterLevel),
             ),
 
             // function for AI prediction is here
@@ -106,11 +174,11 @@ class DarlingPage extends StatelessWidget {
                         border: Border.all(color: Colors.transparent, width: 2),
                         borderRadius: BorderRadius.circular(15)),
                     // get text
-                    child: const Center(
+                    child: Center(
                       child: Column(
                         children: [
                           // humidity reading
-                          Padding(
+                          const Padding(
                             padding: EdgeInsets.only(top: 10),
                             child: const Text(
                               'Humidity',
@@ -123,8 +191,8 @@ class DarlingPage extends StatelessWidget {
                             padding:
                                 EdgeInsets.only(top: 3, left: 10, bottom: 3),
                             child: Text(
-                              '65%',
-                              style: TextStyle(
+                              humidity,
+                              style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 55,
                                   fontWeight: FontWeight.bold),
@@ -142,11 +210,11 @@ class DarlingPage extends StatelessWidget {
                         border: Border.all(color: Colors.transparent, width: 2),
                         borderRadius: BorderRadius.circular(15)),
                     // get text
-                    child: const Center(
+                    child: Center(
                       child: Column(
                         children: [
                           // humidity reading
-                          Padding(
+                          const Padding(
                             padding: EdgeInsets.only(top: 10),
                             child: const Text(
                               'Temp. (C)',
@@ -154,13 +222,13 @@ class DarlingPage extends StatelessWidget {
                                   fontSize: 20, fontWeight: FontWeight.bold),
                             ),
                           ),
-                          // humidity reading
+                          // temprature reading
                           Padding(
                             padding:
                                 EdgeInsets.only(top: 3, left: 10, bottom: 3),
                             child: Text(
-                              '31',
-                              style: TextStyle(
+                              temperature,
+                              style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 55,
                                   fontWeight: FontWeight.bold),

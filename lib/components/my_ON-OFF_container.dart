@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/components/my_notification.dart';
 
 class MyContainer extends StatefulWidget {
   // define all veriable
@@ -12,21 +13,20 @@ class MyContainer extends StatefulWidget {
 }
 
 class _MyContainerState extends State<MyContainer> {
-
   // Initial Color
   Color secondContainerColor = Colors.orange;
   bool value = false; // Initially turned off
 
   void updateLEDStatus(bool newValue) async {
-  DatabaseReference ref = FirebaseDatabase.instance.ref();
-  
-  try {
-    await ref.update({"LED_STATUS": newValue ? 1 : 0});
-    print("LED_STATUS updated to ${newValue ? 1 : 0}");
-  } catch (e) {
-    print("Error updating LED_STATUS: $e");
+    DatabaseReference ref = FirebaseDatabase.instance.ref();
+
+    try {
+      await ref.update({"LED_STATUS": newValue ? 1 : 0});
+      print("LED_STATUS updated to ${newValue ? 1 : 0}");
+    } catch (e) {
+      print("Error updating LED_STATUS: $e");
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +68,15 @@ class _MyContainerState extends State<MyContainer> {
                       });
 
                       updateLEDStatus(newValue); // Update Firebase
-                      
+
+                      // Dynamic Notification based on switch state
+                      MyNotification notification = MyNotification();
+                      notification.showNotification(
+                        title: newValue ? 'Machine Started' : 'Machine Stopped',
+                        body: newValue
+                            ? 'Machine has started running in the background'
+                            : 'Machine has been turned off',
+                      );
                     },
                     title: const Text(
                       'Press to turn ON',
@@ -88,17 +96,14 @@ class _MyContainerState extends State<MyContainer> {
               decoration: BoxDecoration(
                 color: secondContainerColor,
                 borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(15),
-                  bottomRight: Radius.circular(15)),
+                    bottomLeft: Radius.circular(15),
+                    bottomRight: Radius.circular(15)),
               ),
               child: Padding(
                 padding: const EdgeInsets.only(left: 135),
                 child: Text(
                   value ? 'Turned ON' : 'Turned OFF',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 15
-                  ),
+                  style: const TextStyle(color: Colors.white, fontSize: 15),
                 ),
               ),
             ),

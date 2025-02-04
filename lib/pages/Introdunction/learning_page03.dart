@@ -46,7 +46,7 @@ class _LearningPage03State extends State<LearningPage03> {
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 25),
               child: Text(
-                'with repeated use app atarts to maintain your daily water data and upon analysing that provide you predictive information about when you may need to take out water',
+                'with repeated use app starts to maintain your daily water data and upon analysing that provide you predictive information about when you may need to take out water',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Color.fromARGB(255, 82, 78, 78),

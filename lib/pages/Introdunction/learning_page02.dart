@@ -40,7 +40,7 @@ class _LearningPage02State extends State<LearningPage02> {
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Text(
-                'when you notification, please connect the external plug to the socket and press the power switch on app',
+                'when you get notification, please connect the external plug to the socket and press the power switch on app',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 20,
